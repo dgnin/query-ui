@@ -1,0 +1,30 @@
+{
+  "name": "query-ui",
+  "version": "1.0.0",
+  "description": "A graphic manager for queries",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidgnin/query-ui.git"
+  },
+  "author": "David Gómez Nin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidgnin/query-ui/issues"
+  },
+  "homepage": "https://github.com/davidgnin/query-ui#readme",
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-preset-es2015": "^6.22.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.0.0",
+    "fs": "0.0.1-security",
+    "gulp": "^3.9.1",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jshint": "^2.0.4",
+    "jshint": "^2.9.4"
+  }
+}
