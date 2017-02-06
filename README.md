@@ -11,7 +11,7 @@ The `input` of the library is an Object with at least the mandatory `fields` and
 
 * `fields` is an Object where every key is the name of a field and its value a definition of its type.
 * `container` is the DOM Object inside which the GUI is built.
-* `parseFunc` (optional) could be a Function which input is the query object and which output is the desired parsed query. Optionally it could be a simple String with the value `querystring` which activates the default parser. That's also what happens if nothing is provided.
+* `parseFunc` (optional) could be a Function which input is the query object and which output is the desired parsed query. Optionally it could be a simple String with the value `query-string` which activates the default parser. That's also what happens if nothing is provided.
 
 ## Types
 
