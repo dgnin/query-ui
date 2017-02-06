@@ -15,6 +15,7 @@
   "undef": true,
   "unused": true,
   "varstmt": true,
+  "validthis": true,
   "browser": true,
   "devel": true
 }

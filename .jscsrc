@@ -42,7 +42,9 @@
   "requireSpaceBeforeBinaryOperators": ["=", "+", "-", "===", "!=="],
   "requireSpaceBeforeBlockStatements": true,
   "requireSpaceBeforeDestructuredValues": true,
-  "requireSpaceBeforeKeywords": true,
+  "requireSpaceBeforeKeywords": {
+    "allExcept": ["function", "typeof"]
+  },
   "requireSpaceBeforeObjectValues": true,
   "requireSpaceBetweenArguments": true,
   "requireSpacesInAnonymousFunctionExpression": {
