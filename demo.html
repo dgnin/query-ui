@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+  </head>
+  <body>
+    <div id="container">
+    </div>
+    <script src="build/query-ui.js"></script>
+    <script>
+      let qui = queryUI({
+        fields: {
+          'lorem': 'number',
+          'ipsum': 'string',
+          'datetime': 'datetime',
+          'date': 'date',
+          'time': 'time',
+          'timestamp': 'timestamp',
+          'sit_amet': 'boolean',
+          'diplodocus': {
+            type: 'string',
+            url: 'https://losperretes.com',
+            mainParam: 'q',
+            callback: function (data) {
+              return ['perro'];
+            }
+          },
+          'triceratops': {
+            type: 'number',
+            list: [5, 10, 15, 20, 25, null]
+          },
+          'floatador': 'float'
+        },
+        container: document.getElementById('container')
+      });
+    </script>
+  </body>
+</html>
