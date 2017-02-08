@@ -1,6 +1,6 @@
 {
   "name": "query-ui",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A graphic manager for queries",
   "main": "index.js",
   "scripts": {
@@ -26,5 +26,8 @@
     "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^2.0.4",
     "jshint": "^2.9.4"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }
