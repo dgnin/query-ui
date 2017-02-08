@@ -1,0 +1,25 @@
+'use strict';
+import { TYPES } from './utils';
+
+export let getFieldInfo = function getFieldInfo(field, config) {
+  if (config.fields[field] === undefined) {
+    throw `Incoherence between GUI and system fields: ${field}`;
+  }
+
+  let fieldInfo = config.fields[field];
+  let type;
+  if (typeof fieldInfo === 'string') {
+    type = fieldInfo;
+  } else if (typeof fieldInfo === 'object') {
+    type = fieldInfo.type;
+  } else {
+    throw `Field defined wrong: ${field}`;
+  }
+
+  let typeInfo = TYPES[type];
+  if (typeInfo === undefined) {
+    throw `Unknown type for field: ${field}`;
+  }
+
+  return [fieldInfo, type, typeInfo];
+};
