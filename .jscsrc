@@ -7,7 +7,6 @@
   "disallowMixedSpacesAndTabs": true,
   "disallowMultipleSpaces": true,
   "disallowNewlineBeforeBlockStatements": true,
-  "disallowSpaceAfterLineComment": true,
   "disallowSpaceAfterObjectKeys": true,
   "disallowSpaceAfterPrefixUnaryOperators": true,
   "disallowSpaceBeforeBinaryOperators": [",", "/", "*"],
