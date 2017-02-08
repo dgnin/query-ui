@@ -1,6 +1,8 @@
 # query-ui
 A graphic manager for queries.
 
+Take a look to the [demo](https://cdn.rawgit.com/davidgnin/query-ui/32ec7a63/demo.html).
+
 ## Instance creation
 
 `let output = queryUI(input)`
