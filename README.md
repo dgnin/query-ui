@@ -1,7 +1,7 @@
 # query-ui
 A graphic manager for queries.
 
-Take a look to the [demo](https://cdn.rawgit.com/davidgnin/query-ui/32ec7a63/demo.html).
+Take a look to the [demo](https://rawgit.com/davidgnin/query-ui/master/demo.html).
 
 ## Instance creation
 
