@@ -180,12 +180,17 @@ const STYLE = `<style>
     .qui .qui-value, .qui .qui-list-value {
       margin-bottom: 1em;
     }
-      .qui .qui-value[type='checkbox']:after {
-        content: 'False';
-        margin-left: 1.5em;
+      .qui .qui-value[type='checkbox'] {
+        display: inline-block;
+        width: auto;
       }
-      .qui .qui-value[type='checkbox']:checked:after {
-        content: 'True';
+      .qui .qui-value[type='checkbox'] + .qui-value-label:after {
+        content: 'false';
+        padding-left: 0.5em;
+        vertical-align: middle;
+      }
+      .qui .qui-value[type='checkbox']:checked + .qui-value-label:after {
+        content: 'true';
       }
     .qui .qui-list-value, .qui .qui-user-input.qui-list-mode .qui-value {
       display: none;
@@ -298,6 +303,7 @@ export let generateHTML = function generateHTML(id) {
       <select class="qui-operator" size="2"></select>
       <div class="qui-user-input">
         <input type="text" class="qui-value" placeholder="null">
+        <label class="qui-value-label"></label>
         <select class="qui-list-value"></select>
         <button class="qui-add" disabled>Add condition</button>
       </div>

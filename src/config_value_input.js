@@ -1,15 +1,27 @@
 'use strict';
-import { createOption } from './utils';
+import { createOption, PREFIX } from './utils';
 import { getFieldInfo } from './common';
 
 let configValueInput = function configValueInput(config) {
+  let valueId = `${PREFIX}${config.id}-value`;
+  config.gui.value.id = valueId;
+  config.gui.valueLabel.setAttribute('for', valueId);
+
   config.ps.on('field-updated', function (field) {
     // jscs:disable disallowSpaceBeforeComma
     let [fieldInfo, , typeInfo] = getFieldInfo(field, config);
     // jscs:enable disallowSpaceBeforeComma
 
     config.gui.value.value = '';
+    for (let i = 0, attributes = config.gui.value.attributes,
+      length = attributes.length; i < length; i++) {
+      if (['type', 'class', 'placeholder', 'id']
+        .indexOf(attributes[i].nodeName) < 0) {
+        config.gui.value.removeAttribute(attributes[i].nodeName);
+      }
+    }
     config.gui.userInput.classList.remove('qui-list-mode');
+
 
     if (typeof fieldInfo === 'object') {
       if (typeof fieldInfo.list === 'object' &&

@@ -10,6 +10,7 @@ let createGUI = function createGUI(config) {
   gui.operators = document.querySelector(`${selector} .qui-operator`);
   gui.userInput = document.querySelector(`${selector} .qui-user-input`);
   gui.value = document.querySelector(`${selector} .qui-value`);
+  gui.valueLabel = document.querySelector(`${selector} .qui-value-label`);
   gui.listValue = document.querySelector(`${selector} .qui-list-value`);
   gui.add = document.querySelector(`${selector} .qui-add`);
   gui.query = document.querySelector(`${selector} .qui-graphic-query`);
