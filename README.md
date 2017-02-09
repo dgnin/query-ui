@@ -15,6 +15,7 @@ The `input` of the library is an Object with at least the mandatory keys `fields
 * `container` is the DOM Object inside which the GUI is built.
 * `parseFunc` (optional) could be a Function which input is the query object and which output is the desired parsed query. Optionally it could be a simple String with the value `query-string` which activates the default parser. That's also what happens if nothing is provided.
 * `id` (optional) for the generated GUI. Useful if you want to create CSS rules for a specific query-ui GUI.
+* `operators` (optional) is an Array with the string representations of the operators available. If provided, it overrides the default one.
 
 ## Types
 

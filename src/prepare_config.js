@@ -1,5 +1,5 @@
 'use strict';
-import { isDOMElement, PREFIX } from './utils';
+import { isDOMElement, PREFIX, OPERATORS } from './utils';
 import { PARSE_FUNCS, DEFAULT_FUNC } from './parse_funcs/index';
 import pubsub from './pubsub';
 
@@ -12,6 +12,8 @@ let prepareConfig = function prepareConfig(input) {
       typeof PARSE_FUNCS[input.parseFunc] === 'function' ?
       PARSE_FUNCS[input.parseFunc] : PARSE_FUNCS[DEFAULT_FUNC],
     id: input.id !== undefined ? parseInt(input.id, 10) : 0,
+    operators: typeof input.operators === 'object' &&
+      typeof input.operators.length === 'number' ? input.operators : OPERATORS,
     ps: pubsub(),
     conditions: []
   };
