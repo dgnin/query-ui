@@ -2190,7 +2190,7 @@ var parseQueryString = function parseQueryString(query) {
   var queryString = '';
   for (var i = 0, length = query.length; i < length; i++) {
     if (query[i][1] === '=') {
-      if (i > 0) {
+      if (queryString.length > 0) {
         queryString += '&';
       }
       queryString += encodeURIComponent(query[i][0]);
