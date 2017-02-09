@@ -7,30 +7,37 @@
   <body>
     <div id="container">
     </div>
+    <div class="annotations">
+      <p>Open the browser console! There you can access the instance of this query-ui execution from the global variable <code>qui</code>. Call the methods <code>query()</code> and <code>parsed()</code> to observe its behaviour.</p> 
+    </div>
     <script src="build/query-ui.js"></script>
     <script>
       let qui = queryUI({
         fields: {
-          'lorem': 'number',
-          'ipsum': 'string',
-          'datetime': 'datetime',
+          'string_field': 'string',
+          'number_field': 'number',
+          'float_field': 'float',
+          'boolean_field': 'boolean',
+          'datetime_field': 'datetime',
           'date': 'date',
           'time': 'time',
           'timestamp': 'timestamp',
-          'sit_amet': 'boolean',
-          'diplodocus': {
+          'string_list': {
             type: 'string',
-            url: 'https://losperretes.com',
-            mainParam: 'q',
-            callback: function (data) {
-              return ['perro'];
-            }
+            list: ['option1', 'option2', 'option3', 'option4', 'option5']
           },
-          'triceratops': {
+          'number_list': {
             type: 'number',
             list: [5, 10, 15, 20, 25, null]
           },
-          'floatador': 'float'
+          '(TODO) autocomplete_field': {
+            type: 'string',
+            url: 'http://davidgnin.com/demos/query-ui/autocomplete.php',
+            mainParam: 'q',
+            callback: function (answer) {
+              return ['a', 'b', 'c', 'd', 'e'];
+            }
+          }
         },
         container: document.getElementById('container')
       });
