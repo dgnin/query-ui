@@ -4332,7 +4332,8 @@ ajax.get = function (url, data, callback, async) {
       query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
     }
   }
-  ajax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET', null, async);
+  var concat = url.indexOf('?') >= 0 ? '&' : '?';
+  ajax.send(url + (query.length ? concat + query.join('&') : ''), callback, 'GET', null, async);
 };
 
 ajax.post = function (url, data, callback, async) {
