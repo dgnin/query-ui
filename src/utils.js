@@ -75,10 +75,9 @@ export const TYPES = {
     input: 'text',
     validate: function validateDatetime(value) {
       if (typeof value === 'string') {
-        let time = Date.parse(value);
-        if (!isNaN(time)) {
-          return (new Date(time)).toISOString();
-        }
+        try {
+          return (new Date(value)).toISOString();
+        } catch (err) { }
       }
       throw 'Invalid value';
     }
@@ -87,12 +86,11 @@ export const TYPES = {
     operators: ['=', '<', '>', '<=', '>=', '!='],
     default: '=',
     input: 'text',
-    validate: function validateDatetime(value) {
+    validate: function validateDate(value) {
       if (typeof value === 'string') {
-        let time = Date.parse(value);
-        if (!isNaN(time)) {
-          return ((new Date(time)).toISOString()).split('T')[0];
-        }
+        try {
+          return (new Date(value)).toISOString().split('T')[0];
+        } catch (err) { }
       }
       throw 'Invalid value';
     }
@@ -101,12 +99,11 @@ export const TYPES = {
     operators: ['=', '<', '>', '<=', '>=', '!='],
     default: '=',
     input: 'text',
-    validate: function validateDatetime(value) {
+    validate: function validateTime(value) {
       if (typeof value === 'string') {
-        let time = Date.parse(value);
-        if (!isNaN(time)) {
-          return ((new Date(time)).toISOString()).split('T')[1];
-        }
+        try {
+          return (new Date(`1970-01-01T${value}`)).toISOString().split('T')[1];
+        } catch (err) { }
       }
       throw 'Invalid value';
     }
@@ -115,12 +112,14 @@ export const TYPES = {
     operators: ['=', '<', '>', '<=', '>=', '!='],
     default: '=',
     input: 'text',
-    validate: function validateDatetime(value) {
+    validate: function validateTimestamp(value) {
       if (typeof value === 'string') {
-        let time = Date.parse(value);
-        if (!isNaN(time)) {
-          return time;
+        try {
+          (new Date(parseInt(value, 10))).toISOString();
+        } catch (err) {
+          throw 'Invalid value';
         }
+        return value;
       }
       throw 'Invalid value';
     }
@@ -260,7 +259,9 @@ const STYLE = `<style>
       .qui .qui-date .qui-cond-value:before,
       .qui .qui-date .qui-cond-value:after,
       .qui .qui-time .qui-cond-value:before,
-      .qui .qui-time .qui-cond-value:after {
+      .qui .qui-time .qui-cond-value:after,
+      .qui .qui-timestamp .qui-cond-value:before,
+      .qui .qui-timestamp .qui-cond-value:after {
         content: '"';
       }
     .qui .qui-null .qui-cond-value {
