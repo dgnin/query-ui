@@ -4,6 +4,8 @@ import jshint from 'gulp-jshint';
 import jscs from 'gulp-jscs';
 import browserify from 'browserify';
 import fs from 'fs';
+import uglify from 'gulp-uglify';
+import rename from 'gulp-rename';
 
 gulp.task('jshint', function () {
   return gulp.src('src/*.js')
@@ -22,4 +24,11 @@ gulp.task('build', ['jshint', 'jscs'], function () {
     .transform('babelify', { presets: ['es2015']})
     .bundle()
     .pipe(fs.createWriteStream('build/query-ui.js'));
+});
+
+gulp.task('build-min', ['build'], function () {
+  return gulp.src('build/query-ui.js')
+    .pipe(uglify())
+    .pipe(rename('query-ui-min.js'))
+    .pipe(gulp.dest('build'));
 });
