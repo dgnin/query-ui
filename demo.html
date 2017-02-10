@@ -19,7 +19,7 @@
     <div class="annotations">
       <p>Open the browser console! There you can access the instance of this query-ui execution from the global variable <code>qui</code>. Call the methods <code>query()</code> and <code>parsed()</code> to observe its behaviour.</p>
     </div>
-    <script src="build/query-ui-min.js"></script>
+    <script src="build/query-ui.js"></script>
     <script>
       let qui = queryUI({
         fields: {
@@ -39,12 +39,27 @@
             type: 'number',
             list: [5, 10, 15, 20, 25, null]
           },
-          '(TODO) autocomplete_field': {
+          'autocomplete': {
             type: 'string',
-            url: 'http://davidgnin.com/demos/query-ui/autocomplete.php',
-            mainParam: 'q',
-            callback: function (answer) {
-              return ['a', 'b', 'c', 'd', 'e'];
+            url: 'https://api.admanmedia.com/autocomplete/affiliate_users?token=monicaco',
+            onSuccess: function (answer) {
+              let json;
+              try {
+                json = JSON.parse(answer);
+              } catch (err) {
+                return [];
+              }
+              if (json.valid) {
+                let data = [];
+                let value;
+                for (let i = 0, length = json.results.length; i < length; i++) {
+                  value = json.results[i].value;
+                  data.push([value.permalink, value.first_name + ' ' + value.last_name]);
+                }
+                return data;
+              } else {
+                return [];
+              }
             }
           }
         },

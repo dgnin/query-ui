@@ -17,5 +17,9 @@
   "varstmt": true,
   "validthis": true,
   "browser": true,
-  "devel": true
+  "devel": true,
+  "globals": {
+    "autoComplete": true,
+    "ActiveXObject": true
+  }
 }

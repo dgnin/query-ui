@@ -23,11 +23,13 @@
     "browserify": "^14.0.0",
     "fs": "0.0.1-security",
     "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
     "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^2.0.4",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.1",
-    "jshint": "^2.9.4"
+    "jshint": "^2.9.4",
+    "run-sequence": "^1.2.2"
   },
   "dependencies": {
     "lodash": "^4.17.4"
