@@ -30,9 +30,9 @@ The built-in supported types are `number`, `float`, `string`, `date`, `time`, `d
 * `autocomplete`: an Object with the following keys:
   * `type`: an String with the non-special type of values that are expected from the `url`.
   * `url`: an String with the URL to call asynchronously.
-  * `mainParam`: an String with the name of the param which will be filled by the user to make the autocomplete query.
+  * `mainParam`: (optional) an String with the name of the param which will be filled by the user to make the autocomplete query (default is `term`).
   * `method`: (optional) an String with the method `GET` or `POST` (default is `GET`).
-  * `otherParams`: an Object with the keys-value pairs describing other params for the call and its values.
+  * `otherParams`: (optional) an Object with the keys-value pairs describing other params for the call and its values.
   * `onSuccess`: a Function which input is the answer of the call and which output is an Array of length 1 or 2 which first position represents the real value to store and which second position, if provided, represents the value to show to the User.
 
 ## Operators

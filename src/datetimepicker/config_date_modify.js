@@ -37,7 +37,6 @@ let configDateModify = function configDateModify(config) {
     }
   };
   let timeChanged = function timeChanged(e) {
-    console.log('eeeooo', e.target);
     if (e.target === config.gui.hour) {
       config.date.hour = parseInt(e.target.value, 10);
       e.target.value = ensureDigits(config.date.hour, 2);
