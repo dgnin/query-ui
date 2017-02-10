@@ -3487,7 +3487,6 @@ var configDateModify = function configDateModify(config) {
     }
   };
   var timeChanged = function timeChanged(e) {
-    console.log('eeeooo', e.target);
     if (e.target === config.gui.hour) {
       config.date.hour = parseInt(e.target.value, 10);
       e.target.value = (0, _utils.ensureDigits)(config.date.hour, 2);
