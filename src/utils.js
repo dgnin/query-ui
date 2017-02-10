@@ -1,5 +1,68 @@
 'use strict';
 
+let ajax = {};
+ajax.x = function () {
+  if (typeof XMLHttpRequest !== 'undefined') {
+    return new XMLHttpRequest();
+  }
+  let versions = [
+    'MSXML2.XmlHttp.6.0',
+    'MSXML2.XmlHttp.5.0',
+    'MSXML2.XmlHttp.4.0',
+    'MSXML2.XmlHttp.3.0',
+    'MSXML2.XmlHttp.2.0',
+    'Microsoft.XmlHttp'
+  ];
+
+  let xhr;
+  for (let i = 0; i < versions.length; i++) {
+    try {
+      xhr = new ActiveXObject(versions[i]);
+      break;
+    } catch (e) {
+    }
+  }
+  return xhr;
+};
+
+ajax.send = function (url, callback, method, data, async) {
+  if (async === undefined) {
+    async = true;
+  }
+  let x = ajax.x();
+  x.open(method, url, async);
+  x.onreadystatechange = function () {
+    if (x.readyState === 4) {
+      callback(x.responseText);
+    }
+  };
+  if (method === 'POST') {
+    x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  }
+  x.send(data);
+};
+
+ajax.get = function (url, data, callback, async) {
+  let query = [];
+  for (let key in data) {
+    if (data.hasOwnProperty(key)) {
+      query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+  }
+  ajax.send(url + (query.length ? '?' + query.join('&') : ''), callback, 'GET',
+    null, async);
+};
+
+ajax.post = function (url, data, callback, async) {
+  let query = [];
+  for (let key in data) {
+    if (data.hasOwnProperty(key)) {
+      query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+  }
+  ajax.send(url, callback, 'POST', query.join('&'), async);
+};
+
 export let isDOMElement = function isDOMElement(o) {
   return (typeof HTMLElement === 'object' ? o instanceof HTMLElement : //DOM2
     o && typeof o === 'object' && o !== null && o.nodeType === 1 &&
@@ -13,6 +76,13 @@ export let createOption = function createOption(value, selected = false) {
   option.appendChild(document.createTextNode(value));
   return option;
 };
+
+export let callURL = function callURL(params, onSuccess) {
+  let ajaxCall = params.method === 'POST' ? ajax.post : ajax.get;
+  ajaxCall(params.url, params.params, onSuccess);
+};
+
+export const MAIN_PARAM = 'term';
 
 export const OPERATORS = ['=', '<', '>', '<=', '>=', '!=', 'like'];
 
@@ -148,6 +218,16 @@ const STYLE = `<style>
   .qui [type="search"]{-webkit-appearance:textfield;outline-offset:-2px}
   .qui [type="search"]::-webkit-search-cancel-button,
   .qui [type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+
+  .autocomplete-suggestions{font-family:sans-serif;font-size:.8em;
+  text-align:left;cursor:default;border:1px solid #ccc;border-top:0;
+  background:#fff;box-shadow:-1px 1px 3px rgba(0,0,0,.1);position:absolute;
+  display:none;z-index:9999;max-height:254px;overflow:hidden;overflow-y:auto;
+  box-sizing:border-box}.autocomplete-suggestion{position:relative;
+  padding:0 .6em;line-height:23px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;font-size:1.02em;color:#333}.autocomplete-suggestion b{
+  font-weight:400;color:#1f8dd6}
+  .autocomplete-suggestion.selected{background:#f0f0f0}
 
   .qui {
     max-width: 40em;

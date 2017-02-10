@@ -1,12 +1,43 @@
 'use strict';
-import { createOption, PREFIX } from './utils';
+import { createOption, PREFIX, callURL } from './utils';
 import { getFieldInfo } from './common';
 import datetimepicker from './datetimepicker/main';
+import merge from 'lodash/merge';
 
 let configValueInput = function configValueInput(config) {
   let valueId = `${PREFIX}${config.id}-value`;
   config.gui.value.id = valueId;
   config.gui.valueLabel.setAttribute('for', valueId);
+
+  let acomplete;
+  let loadAutoComplete = function loadAutoComplete(fieldInfo) {
+    return new autoComplete({
+      selector: `#${PREFIX}${config.id} .qui-value`,
+      source: function (term, response) {
+        let query = {};
+        query[fieldInfo.mainParam || 'term'] = term;
+        if (fieldInfo.otherParams) {
+          query = merge(query, fieldInfo.otherParams);
+        }
+        callURL({
+          url: fieldInfo.url,
+          params: query,
+          method: fieldInfo.method || 'GET'
+        }, function (answer) {
+          let data = fieldInfo.onSuccess(answer);
+          response(data);
+        });
+      },
+      renderItem: function (item, search) {
+        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        let re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
+        let value = item[0];
+        let show = item.length > 1 ? item[1] : item[0];
+        return '<div class="autocomplete-suggestion" data-val="' + value +
+          '">' + show.replace(re, '<b>$1</b>') + '</div>';
+      }
+    });
+  };
 
   let picker;
   let loadPickerIfRequired = function loadPickerIfRequired(type) {
@@ -55,6 +86,10 @@ let configValueInput = function configValueInput(config) {
       picker.remove();
       picker = undefined;
     }
+    if (acomplete) {
+      acomplete.destroy();
+      acomplete = undefined;
+    }
 
     if (typeof fieldInfo === 'object') {
       if (typeof fieldInfo.list === 'object' &&
@@ -67,9 +102,8 @@ let configValueInput = function configValueInput(config) {
           listValue.appendChild(createOption(fieldInfo.list[i]));
         }
         config.gui.userInput.classList.add('qui-list-mode');
-      } else if (typeof fieldInfo.url === 'string' &&
-        typeof fieldInfo.mainParam === 'string') {
-        config.gui.value.type = 'search';
+      } else if (typeof fieldInfo.url === 'string') {
+        acomplete = loadAutoComplete(fieldInfo);
       } else {
         throw `Complex type wrong defined for field: ${field}`;
       }
