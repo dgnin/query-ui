@@ -117,15 +117,22 @@ const STYLE = `<style>
   }
   .dtp.dtp-with-time .dtp-time-picker, .dtp .dtp-buttons {
     display: flex;
+    align-items: flex-end;
   }
     .dtp .dtp-time-decorator {
       flex-grow: 1;
+      width: 5%;
+      padding-bottom: 0.25em;
     }
     .dtp .dtp-two-digits {
       flex-grow: 2;
+      box-sizing: border-box;
+      width: 20%;
     }
     .dtp .dtp-three-digits {
       flex-grow: 3;
+      box-sizing: border-box;
+      width: 25%;
     }
   .dtp .dtp-buttons {
     padding: 0.5em 0.25em 0.25em;

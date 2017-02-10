@@ -158,6 +158,9 @@ const STYLE = `<style>
       padding: 0.5em;
       box-sizing: border-box;
     }
+      .qui .dtp-picker input, .qui .dtp-picker button {
+        padding: initial;
+      }
     .qui .qui-input {
       display: flex;
     }
