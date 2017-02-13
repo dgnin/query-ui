@@ -3288,8 +3288,19 @@ var configValueInput = function configValueInput(config) {
   config.gui.value.id = valueId;
   config.gui.valueLabel.setAttribute('for', valueId);
 
+  var currentValid = void 0;
+  var checkIfValid = function checkIfValid() {
+    if (config.gui.value.value === currentValid) {
+      config.gui.add.disabled = false;
+    } else {
+      config.gui.add.disabled = true;
+    }
+  };
+
   var acomplete = void 0;
   var loadAutoComplete = function loadAutoComplete(fieldInfo) {
+    config.gui.value.addEventListener('keyup', checkIfValid);
+    checkIfValid();
     return new autoComplete({
       selector: '#' + _utils.PREFIX + config.id + ' .qui-value',
       source: function source(term, response) {
@@ -3313,6 +3324,12 @@ var configValueInput = function configValueInput(config) {
         var value = item[0];
         var show = item.length > 1 ? item[1] : item[0];
         return '<div class="autocomplete-suggestion" data-val="' + value + '">' + show.replace(re, '<b>$1</b>') + '</div>';
+      },
+      onSelect: function onSelect(ev, term) {
+        if (ev) {
+          currentValid = term;
+          checkIfValid();
+        }
       }
     });
   };
@@ -3367,6 +3384,8 @@ var configValueInput = function configValueInput(config) {
       picker = undefined;
     }
     if (acomplete) {
+      currentValid = undefined;
+      config.gui.value.removeEventListener('keyup', checkIfValid);
       acomplete.destroy();
       acomplete = undefined;
     }
