@@ -6,7 +6,9 @@ let createGUI = function createGUI(config) {
 
   let gui = {};
   let selector = `#${PREFIX}${config.id}`;
+  gui.input = document.querySelector(`${selector} .qui-input`);
   gui.fields = document.querySelector(`${selector} .qui-field`);
+  gui.custom = document.querySelector(`${selector} .qui-custom`);
   gui.operators = document.querySelector(`${selector} .qui-operator`);
   gui.userInput = document.querySelector(`${selector} .qui-user-input`);
   gui.value = document.querySelector(`${selector} .qui-value`);
@@ -24,6 +26,11 @@ let createGUI = function createGUI(config) {
         throw `GUI failed creating component: ${key}`;
       }
     }
+  }
+
+  //Custom mode
+  if (config.customMode) {
+    gui.input.classList.add('qui-custom-mode');
   }
 
   return gui;

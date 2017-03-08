@@ -245,7 +245,16 @@ const STYLE = `<style>
     .qui .qui-input {
       display: flex;
     }
-    .qui .qui-field {
+    .qui .qui-custom {
+      display: none;
+    }
+    .qui .qui-input.qui-custom-mode .qui-custom {
+      display: block;
+    }
+    .qui .qui-input.qui-custom-mode .qui-field {
+      display: none;
+    }
+    .qui .qui-field, .qui .qui-custom {
       flex-grow: 1;
     }
     .qui .qui-operator {
@@ -385,6 +394,8 @@ export let generateHTML = function generateHTML(id) {
     ${STYLE}
     <div class="qui-input">
       <select class="qui-field" size="2"></select>
+      <input type="text" class="qui-custom" placeholder="Field name" size="2">
+      </input>
       <select class="qui-operator" size="2"></select>
       <div class="qui-user-input">
         <input type="text" class="qui-value" placeholder="null">

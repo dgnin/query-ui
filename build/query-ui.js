@@ -2946,11 +2946,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _utils = require('./utils');
 
 var getFieldInfo = exports.getFieldInfo = function getFieldInfo(field, config) {
-  if (config.fields[field] === undefined) {
-    throw 'Incoherence between GUI and system fields: ' + field;
+  var fieldInfo = void 0;
+  if (config.customMode) {
+    fieldInfo = config.custom;
+  } else {
+    if (config.fields[field] === undefined) {
+      throw 'Incoherence between GUI and system fields: ' + field;
+    }
+    fieldInfo = config.fields[field];
   }
 
-  var fieldInfo = config.fields[field];
   var type = void 0;
   if (typeof fieldInfo === 'string') {
     type = fieldInfo;
@@ -2986,8 +2991,8 @@ var configConditionAdd = function configConditionAdd(config) {
   var operator = void 0;
 
   config.ps.on('field-updated', function (newField) {
-    config.gui.add.disabled = false;
-    field = newField;
+    config.gui.add.disabled = !config.customMode || newField !== '' ? false : true;
+    field = config.customMode ? newField.toString() : newField;
   });
 
   config.ps.on('operator-updated', function (newOperator) {
@@ -3105,15 +3110,20 @@ Object.defineProperty(exports, "__esModule", {
 var _utils = require('./utils');
 
 var configFields = function configFields(config) {
-  for (var field in config.fields) {
-    if (config.fields.hasOwnProperty(field)) {
-      config.gui.fields.appendChild((0, _utils.createOption)(field));
+  if (config.customMode) {
+    config.gui.custom.addEventListener('keyup', function () {
+      config.ps.trigger('field-updated', config.gui.custom.value);
+    });
+  } else {
+    for (var field in config.fields) {
+      if (config.fields.hasOwnProperty(field)) {
+        config.gui.fields.appendChild((0, _utils.createOption)(field));
+      }
     }
+    config.gui.fields.addEventListener('change', function () {
+      config.ps.trigger('field-updated', config.gui.fields.value);
+    });
   }
-
-  config.gui.fields.addEventListener('change', function () {
-    config.ps.trigger('field-updated', config.gui.fields.value);
-  });
 };
 
 exports.default = configFields;
@@ -3436,7 +3446,9 @@ var createGUI = function createGUI(config) {
 
   var gui = {};
   var selector = '#' + _utils.PREFIX + config.id;
+  gui.input = document.querySelector(selector + ' .qui-input');
   gui.fields = document.querySelector(selector + ' .qui-field');
+  gui.custom = document.querySelector(selector + ' .qui-custom');
   gui.operators = document.querySelector(selector + ' .qui-operator');
   gui.userInput = document.querySelector(selector + ' .qui-user-input');
   gui.value = document.querySelector(selector + ' .qui-value');
@@ -3454,6 +3466,11 @@ var createGUI = function createGUI(config) {
         throw 'GUI failed creating component: ' + key;
       }
     }
+  }
+
+  //Custom mode
+  if (config.customMode) {
+    gui.input.classList.add('qui-custom-mode');
   }
 
   return gui;
@@ -4209,6 +4226,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var prepareConfig = function prepareConfig(input) {
   var config = {
     fields: _typeof(input.fields) === 'object' ? input.fields : undefined,
+    custom: _typeof(input.custom) === 'object' || typeof input.custom === 'string' ? input.custom : undefined,
     container: (0, _utils.isDOMElement)(input.container) ? input.container : undefined,
     parseFunc: typeof input.parseFunc === 'function' ? input.parseFunc : typeof input.parseFunc === 'string' && typeof _index.PARSE_FUNCS[input.parseFunc] === 'function' ? _index.PARSE_FUNCS[input.parseFunc] : _index.PARSE_FUNCS[_index.DEFAULT_FUNC],
     id: input.id !== undefined ? parseInt(input.id, 10) : 0,
@@ -4227,8 +4245,12 @@ var prepareConfig = function prepareConfig(input) {
     config.id = parseInt(config.id, 10);
   }
 
-  if (!config.fields || !config.container) {
-    throw 'Params `fields` and `container` are mandarory';
+  if (!config.fields && !config.custom || !config.container) {
+    throw 'Params `fields/custom` and `container` are mandarory';
+  }
+
+  if (config.fields === undefined && config.custom) {
+    config.customMode = true;
   }
 
   return config;
@@ -4500,10 +4522,10 @@ var TYPES = exports.TYPES = {
 
 var PREFIX = exports.PREFIX = 'qui-';
 
-var STYLE = '<style>\n  /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */\n  /*Only the forms section and modified to affect only things under .qui class*/\n  .qui button,.qui input,.qui optgroup,.qui select,.qui textarea{\n  font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}.qui button,\n  .qui input{overflow:visible}.qui button,.qui select{text-transform:none}\n  .qui button,html .qui [type="button"],.qui [type="reset"],\n  .qui [type="submit"]{-webkit-appearance:button}.qui button::-moz-focus-inner,\n  .qui [type="button"]::-moz-focus-inner,.qui [type="reset"]::-moz-focus-inner,\n  .qui [type="submit"]::-moz-focus-inner{border-style:none;padding:0}\n  .qui button:-moz-focusring,.qui [type="button"]:-moz-focusring,\n  .qui [type="reset"]:-moz-focusring,.qui [type="submit"]:-moz-focusring{\n  outline:1px dotted ButtonText}.qui fieldset{border:1px solid silver;\n  margin:0 2px;padding:.35em .625em .75em}.qui [type="checkbox"],\n  .qui [type="radio"]{box-sizing:border-box;padding:0}\n  .qui [type="number"]::-webkit-inner-spin-button,\n  .qui [type="number"]::-webkit-outer-spin-button{height:auto}\n  .qui [type="search"]{-webkit-appearance:textfield;outline-offset:-2px}\n  .qui [type="search"]::-webkit-search-cancel-button,\n  .qui [type="search"]::-webkit-search-decoration{-webkit-appearance:none}\n\n  .autocomplete-suggestions{font-family:sans-serif;font-size:.8em;\n  text-align:left;cursor:default;border:1px solid #ccc;border-top:0;\n  background:#fff;box-shadow:-1px 1px 3px rgba(0,0,0,.1);position:absolute;\n  display:none;z-index:9999;max-height:254px;overflow:hidden;overflow-y:auto;\n  box-sizing:border-box}.autocomplete-suggestion{position:relative;\n  padding:0 .6em;line-height:23px;white-space:nowrap;overflow:hidden;\n  text-overflow:ellipsis;font-size:1.02em;color:#333}.autocomplete-suggestion b{\n  font-weight:400;color:#1f8dd6}\n  .autocomplete-suggestion.selected{background:#f0f0f0}\n\n  .qui {\n    max-width: 40em;\n    font-family: sans-serif;\n    margin: auto;\n  }\n    .qui select, .qui input, .qui button {\n      padding: 0.5em;\n      box-sizing: border-box;\n    }\n      .qui .dtp-picker input, .qui .dtp-picker button {\n        padding: initial;\n      }\n    .qui .qui-input {\n      display: flex;\n    }\n    .qui .qui-field {\n      flex-grow: 1;\n    }\n    .qui .qui-operator {\n      margin: 0 1em;\n      min-width: 4em;\n    }\n    .qui-user-input {\n      width: 35%;\n      min-height: 6em;\n    }\n    .qui .qui-value, .qui .qui-list-value, .qui .qui-add {\n      display: block;\n      width: 100%;\n    }\n    .qui .qui-value, .qui .qui-list-value {\n      margin-bottom: 1em;\n    }\n      .qui .qui-value[type=\'checkbox\'] {\n        display: inline-block;\n        width: auto;\n      }\n      .qui .qui-value[type=\'checkbox\'] + .qui-value-label:after {\n        content: \'false\';\n        padding-left: 0.5em;\n        vertical-align: middle;\n      }\n      .qui .qui-value[type=\'checkbox\']:checked + .qui-value-label:after {\n        content: \'true\';\n      }\n    .qui .qui-list-value, .qui .qui-user-input.qui-list-mode .qui-value {\n      display: none;\n    }\n    .qui .qui-user-input.qui-list-mode .qui-list-value {\n      display: block;\n    }\n    .qui .qui-graphic-query {\n      padding: 0;\n      background-color: #444;\n      color: #ccc;\n      list-style: none;\n    }\n      .qui .qui-graphic-query:after {\n        content: \'\';\n        display: block;\n        clear: left;\n        text-align: center;\n        color: #aaa;\n      }\n      .qui .qui-graphic-query:empty:after {\n        content: \'empty query\';\n        padding: 0.5em;\n      }\n    .qui .qui-condition {\n      float: left;\n      padding: 0.5em;\n      cursor: pointer;\n    }\n      .qui .qui-condition:hover {\n        background-color: #555;\n      }\n      .qui .qui-condition.qui-selected {\n        background-color: #666;\n      }\n      .qui .qui-condition:before {\n        content: \'and\';\n        display: inline-block;\n        padding-right: 1em;\n      }\n      .qui .qui-condition:first-child:before {\n        display: none;\n      }\n      .qui .qui-condition:after {\n        content: \')\';\n        padding-left: 0.25em;\n      }\n    .qui .qui-cond-field {\n      color: #fbffcc;\n    }\n      .qui .qui-cond-field:before {\n        content: \'(\';\n        color: #ccc;\n        padding-right: 0.25em;\n      }\n    .qui .qui-cond-operator {\n      color: #fcc;\n      padding: 0 0.4em;\n    }\n    .qui .qui-cond-value {\n      color: #8eeeff;\n    }\n      .qui .qui-string .qui-cond-value:before,\n      .qui .qui-string .qui-cond-value:after,\n      .qui .qui-datetime .qui-cond-value:before,\n      .qui .qui-datetime .qui-cond-value:after,\n      .qui .qui-date .qui-cond-value:before,\n      .qui .qui-date .qui-cond-value:after,\n      .qui .qui-time .qui-cond-value:before,\n      .qui .qui-time .qui-cond-value:after,\n      .qui .qui-timestamp .qui-cond-value:before,\n      .qui .qui-timestamp .qui-cond-value:after {\n        content: \'"\';\n      }\n    .qui .qui-null .qui-cond-value {\n      color: #c9a7e6;\n      font-style: italic;\n    }\n      .qui .qui-string.qui-null .qui-cond-value:before,\n      .qui .qui-string.qui-null .qui-cond-value:after,\n      .qui .qui-datetime.qui-null .qui-cond-value:before,\n      .qui .qui-datetime.qui-null .qui-cond-value:after,\n      .qui .qui-date.qui-null .qui-cond-value:before,\n      .qui .qui-date.qui-null .qui-cond-value:after,\n      .qui .qui-time.qui-null .qui-cond-value:before,\n      .qui .qui-time.qui-null .qui-cond-value:after {\n        content: \'\';\n      }\n    .qui .qui-last-part {\n      display: flex;\n      align-items: flex-start;\n    }\n    .qui .qui-errors {\n      flex-grow: 1;\n      order: 1;\n      font-size: 0.8em;\n      color: #b00;\n      cursor: default;\n    }\n    .qui .qui-remove {\n      display: block;\n      width: 35%;\n      order: 2;\n    }\n</style>';
+var STYLE = '<style>\n  /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */\n  /*Only the forms section and modified to affect only things under .qui class*/\n  .qui button,.qui input,.qui optgroup,.qui select,.qui textarea{\n  font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}.qui button,\n  .qui input{overflow:visible}.qui button,.qui select{text-transform:none}\n  .qui button,html .qui [type="button"],.qui [type="reset"],\n  .qui [type="submit"]{-webkit-appearance:button}.qui button::-moz-focus-inner,\n  .qui [type="button"]::-moz-focus-inner,.qui [type="reset"]::-moz-focus-inner,\n  .qui [type="submit"]::-moz-focus-inner{border-style:none;padding:0}\n  .qui button:-moz-focusring,.qui [type="button"]:-moz-focusring,\n  .qui [type="reset"]:-moz-focusring,.qui [type="submit"]:-moz-focusring{\n  outline:1px dotted ButtonText}.qui fieldset{border:1px solid silver;\n  margin:0 2px;padding:.35em .625em .75em}.qui [type="checkbox"],\n  .qui [type="radio"]{box-sizing:border-box;padding:0}\n  .qui [type="number"]::-webkit-inner-spin-button,\n  .qui [type="number"]::-webkit-outer-spin-button{height:auto}\n  .qui [type="search"]{-webkit-appearance:textfield;outline-offset:-2px}\n  .qui [type="search"]::-webkit-search-cancel-button,\n  .qui [type="search"]::-webkit-search-decoration{-webkit-appearance:none}\n\n  .autocomplete-suggestions{font-family:sans-serif;font-size:.8em;\n  text-align:left;cursor:default;border:1px solid #ccc;border-top:0;\n  background:#fff;box-shadow:-1px 1px 3px rgba(0,0,0,.1);position:absolute;\n  display:none;z-index:9999;max-height:254px;overflow:hidden;overflow-y:auto;\n  box-sizing:border-box}.autocomplete-suggestion{position:relative;\n  padding:0 .6em;line-height:23px;white-space:nowrap;overflow:hidden;\n  text-overflow:ellipsis;font-size:1.02em;color:#333}.autocomplete-suggestion b{\n  font-weight:400;color:#1f8dd6}\n  .autocomplete-suggestion.selected{background:#f0f0f0}\n\n  .qui {\n    max-width: 40em;\n    font-family: sans-serif;\n    margin: auto;\n  }\n    .qui select, .qui input, .qui button {\n      padding: 0.5em;\n      box-sizing: border-box;\n    }\n      .qui .dtp-picker input, .qui .dtp-picker button {\n        padding: initial;\n      }\n    .qui .qui-input {\n      display: flex;\n    }\n    .qui .qui-custom {\n      display: none;\n    }\n    .qui .qui-input.qui-custom-mode .qui-custom {\n      display: block;\n    }\n    .qui .qui-input.qui-custom-mode .qui-field {\n      display: none;\n    }\n    .qui .qui-field, .qui .qui-custom {\n      flex-grow: 1;\n    }\n    .qui .qui-operator {\n      margin: 0 1em;\n      min-width: 4em;\n    }\n    .qui-user-input {\n      width: 35%;\n      min-height: 6em;\n    }\n    .qui .qui-value, .qui .qui-list-value, .qui .qui-add {\n      display: block;\n      width: 100%;\n    }\n    .qui .qui-value, .qui .qui-list-value {\n      margin-bottom: 1em;\n    }\n      .qui .qui-value[type=\'checkbox\'] {\n        display: inline-block;\n        width: auto;\n      }\n      .qui .qui-value[type=\'checkbox\'] + .qui-value-label:after {\n        content: \'false\';\n        padding-left: 0.5em;\n        vertical-align: middle;\n      }\n      .qui .qui-value[type=\'checkbox\']:checked + .qui-value-label:after {\n        content: \'true\';\n      }\n    .qui .qui-list-value, .qui .qui-user-input.qui-list-mode .qui-value {\n      display: none;\n    }\n    .qui .qui-user-input.qui-list-mode .qui-list-value {\n      display: block;\n    }\n    .qui .qui-graphic-query {\n      padding: 0;\n      background-color: #444;\n      color: #ccc;\n      list-style: none;\n    }\n      .qui .qui-graphic-query:after {\n        content: \'\';\n        display: block;\n        clear: left;\n        text-align: center;\n        color: #aaa;\n      }\n      .qui .qui-graphic-query:empty:after {\n        content: \'empty query\';\n        padding: 0.5em;\n      }\n    .qui .qui-condition {\n      float: left;\n      padding: 0.5em;\n      cursor: pointer;\n    }\n      .qui .qui-condition:hover {\n        background-color: #555;\n      }\n      .qui .qui-condition.qui-selected {\n        background-color: #666;\n      }\n      .qui .qui-condition:before {\n        content: \'and\';\n        display: inline-block;\n        padding-right: 1em;\n      }\n      .qui .qui-condition:first-child:before {\n        display: none;\n      }\n      .qui .qui-condition:after {\n        content: \')\';\n        padding-left: 0.25em;\n      }\n    .qui .qui-cond-field {\n      color: #fbffcc;\n    }\n      .qui .qui-cond-field:before {\n        content: \'(\';\n        color: #ccc;\n        padding-right: 0.25em;\n      }\n    .qui .qui-cond-operator {\n      color: #fcc;\n      padding: 0 0.4em;\n    }\n    .qui .qui-cond-value {\n      color: #8eeeff;\n    }\n      .qui .qui-string .qui-cond-value:before,\n      .qui .qui-string .qui-cond-value:after,\n      .qui .qui-datetime .qui-cond-value:before,\n      .qui .qui-datetime .qui-cond-value:after,\n      .qui .qui-date .qui-cond-value:before,\n      .qui .qui-date .qui-cond-value:after,\n      .qui .qui-time .qui-cond-value:before,\n      .qui .qui-time .qui-cond-value:after,\n      .qui .qui-timestamp .qui-cond-value:before,\n      .qui .qui-timestamp .qui-cond-value:after {\n        content: \'"\';\n      }\n    .qui .qui-null .qui-cond-value {\n      color: #c9a7e6;\n      font-style: italic;\n    }\n      .qui .qui-string.qui-null .qui-cond-value:before,\n      .qui .qui-string.qui-null .qui-cond-value:after,\n      .qui .qui-datetime.qui-null .qui-cond-value:before,\n      .qui .qui-datetime.qui-null .qui-cond-value:after,\n      .qui .qui-date.qui-null .qui-cond-value:before,\n      .qui .qui-date.qui-null .qui-cond-value:after,\n      .qui .qui-time.qui-null .qui-cond-value:before,\n      .qui .qui-time.qui-null .qui-cond-value:after {\n        content: \'\';\n      }\n    .qui .qui-last-part {\n      display: flex;\n      align-items: flex-start;\n    }\n    .qui .qui-errors {\n      flex-grow: 1;\n      order: 1;\n      font-size: 0.8em;\n      color: #b00;\n      cursor: default;\n    }\n    .qui .qui-remove {\n      display: block;\n      width: 35%;\n      order: 2;\n    }\n</style>';
 
 var generateHTML = exports.generateHTML = function generateHTML(id) {
-  return '<div class="qui" id="qui-' + id + '">\n    ' + STYLE + '\n    <div class="qui-input">\n      <select class="qui-field" size="2"></select>\n      <select class="qui-operator" size="2"></select>\n      <div class="qui-user-input">\n        <input type="text" class="qui-value" placeholder="null">\n        <label class="qui-value-label"></label>\n        <select class="qui-list-value"></select>\n        <button class="qui-add" disabled>Add condition</button>\n      </div>\n    </div>\n    <div class="qui-editor">\n      <ul class="qui-graphic-query"></ul>\n      <div class="qui-last-part">\n        <button class="qui-remove" disabled>Remove condition</button>\n        <div class="qui-errors"></div>\n      </div>\n    </div>\n  </div>';
+  return '<div class="qui" id="qui-' + id + '">\n    ' + STYLE + '\n    <div class="qui-input">\n      <select class="qui-field" size="2"></select>\n      <input type="text" class="qui-custom" placeholder="Field name" size="2">\n      </input>\n      <select class="qui-operator" size="2"></select>\n      <div class="qui-user-input">\n        <input type="text" class="qui-value" placeholder="null">\n        <label class="qui-value-label"></label>\n        <select class="qui-list-value"></select>\n        <button class="qui-add" disabled>Add condition</button>\n      </div>\n    </div>\n    <div class="qui-editor">\n      <ul class="qui-graphic-query"></ul>\n      <div class="qui-last-part">\n        <button class="qui-remove" disabled>Remove condition</button>\n        <div class="qui-errors"></div>\n      </div>\n    </div>\n  </div>';
 };
 
 },{}]},{},[129]);

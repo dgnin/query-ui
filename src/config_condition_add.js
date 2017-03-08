@@ -6,8 +6,9 @@ let configConditionAdd = function configConditionAdd(config) {
   let operator;
 
   config.ps.on('field-updated', function (newField) {
-    config.gui.add.disabled = false;
-    field = newField;
+    config.gui.add.disabled = !config.customMode || newField !== '' ? false :
+      true;
+    field = config.customMode ? newField.toString() : newField;
   });
 
   config.ps.on('operator-updated', function (newOperator) {

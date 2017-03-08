@@ -2,11 +2,16 @@
 import { TYPES } from './utils';
 
 export let getFieldInfo = function getFieldInfo(field, config) {
-  if (config.fields[field] === undefined) {
-    throw `Incoherence between GUI and system fields: ${field}`;
+  let fieldInfo;
+  if (config.customMode) {
+    fieldInfo = config.custom;
+  } else {
+    if (config.fields[field] === undefined) {
+      throw `Incoherence between GUI and system fields: ${field}`;
+    }
+    fieldInfo = config.fields[field];
   }
 
-  let fieldInfo = config.fields[field];
   let type;
   if (typeof fieldInfo === 'string') {
     type = fieldInfo;

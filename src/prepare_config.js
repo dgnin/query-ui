@@ -34,6 +34,10 @@ let prepareConfig = function prepareConfig(input) {
     throw 'Params `fields/custom` and `container` are mandarory';
   }
 
+  if (config.fields === undefined && config.custom) {
+    config.customMode = true;
+  }
+
   return config;
 };
 
