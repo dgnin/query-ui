@@ -6,6 +6,7 @@ let configFields = function configFields(config) {
     config.gui.custom.addEventListener('keyup', function () {
       config.ps.trigger('field-updated', config.gui.custom.value);
     });
+    config.ps.trigger('field-updated', '');
   } else {
     for (let field in config.fields) {
       if (config.fields.hasOwnProperty(field)) {

@@ -3114,6 +3114,7 @@ var configFields = function configFields(config) {
     config.gui.custom.addEventListener('keyup', function () {
       config.ps.trigger('field-updated', config.gui.custom.value);
     });
+    config.ps.trigger('field-updated', '');
   } else {
     for (var field in config.fields) {
       if (config.fields.hasOwnProperty(field)) {
