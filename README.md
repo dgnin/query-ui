@@ -12,6 +12,7 @@ Take a look at the [demo](https://rawgit.com/davidgnin/query-ui/master/demo.html
 The `input` of the library is an Object with at least the mandatory keys `fields` and `container`.
 
 * `fields` is an Object where every key is the name of a field and its value a definition of its type.
+* `custom`: an String or Object with the type definition. When this is provided and `fields` don't, field name will be defined by the user and it will have always this type.
 * `container` is the DOM Object inside which the GUI is built.
 * `parseFunc` (optional) could be a Function which input is the query object and which output is the desired parsed query. Optionally it could be a simple String with the value `query-string` which activates the default parser. That's also what happens if nothing is provided.
 * `id` (optional) for the generated GUI. Useful if you want to create CSS rules for a specific query-ui GUI.

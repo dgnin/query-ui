@@ -6,6 +6,8 @@ import pubsub from './pubsub';
 let prepareConfig = function prepareConfig(input) {
   let config = {
     fields: typeof input.fields === 'object' ? input.fields : undefined,
+    custom: typeof input.custom === 'object' ||
+      typeof input.custom === 'string' ? input.custom : undefined,
     container: isDOMElement(input.container) ? input.container : undefined,
     parseFunc: typeof input.parseFunc === 'function' ? input.parseFunc :
       typeof input.parseFunc === 'string' &&
@@ -28,8 +30,8 @@ let prepareConfig = function prepareConfig(input) {
     config.id = parseInt(config.id, 10);
   }
 
-  if (!config.fields || !config.container) {
-    throw 'Params `fields` and `container` are mandarory';
+  if ((!config.fields && !config.custom) || !config.container) {
+    throw 'Params `fields/custom` and `container` are mandarory';
   }
 
   return config;
